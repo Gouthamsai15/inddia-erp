@@ -10,6 +10,12 @@ import { ShieldAlert, ExternalLink } from 'lucide-react';
 import Home from './pages/home/Home';
 import Login from './pages/auth/Login';
 import DashboardHome from './pages/dashboard/Home';
+import SubjectsList from './pages/dashboard/subjects/SubjectsList';
+import SubjectDetails from './pages/dashboard/subjects/SubjectDetails';
+import StaffList from './pages/dashboard/staff/StaffList';
+import StaffDetails from './pages/dashboard/staff/StaffDetails';
+import StudentList from './pages/dashboard/students/StudentList';
+import StudentDetails from './pages/dashboard/students/StudentDetails';
 
 // Layouts & Protection
 import { DashboardLayout } from './components/layout/DashboardLayout';
@@ -130,11 +136,16 @@ export default function App() {
           <Route path="home" element={<DashboardHome />} />
           
           {/* Admin & Staff Only */}
-          <Route path="students" element={<RoleProtectedRoute allowedRoles={['admin', 'staff']}><div className="p-8">Students Page</div></RoleProtectedRoute>} />
-          <Route path="subjects" element={<RoleProtectedRoute allowedRoles={['admin', 'staff']}><div className="p-8">Subjects Page</div></RoleProtectedRoute>} />
+          <Route path="students" element={<RoleProtectedRoute allowedRoles={['admin', 'staff']}><StudentList /></RoleProtectedRoute>} />
+          <Route path="students/:id" element={<RoleProtectedRoute allowedRoles={['admin', 'staff']}><StudentDetails /></RoleProtectedRoute>} />
+          
+          <Route path="subjects" element={<RoleProtectedRoute allowedRoles={['admin', 'staff']}><SubjectsList /></RoleProtectedRoute>} />
+          <Route path="subjects/:id" element={<RoleProtectedRoute allowedRoles={['admin', 'staff']}><SubjectDetails /></RoleProtectedRoute>} />
           
           {/* Admin Only */}
-          <Route path="staff" element={<RoleProtectedRoute allowedRoles={['admin']}><div className="p-8">Staff Management Page</div></RoleProtectedRoute>} />
+          <Route path="staff" element={<RoleProtectedRoute allowedRoles={['admin']}><StaffList /></RoleProtectedRoute>} />
+          <Route path="staff/:id" element={<RoleProtectedRoute allowedRoles={['admin']}><StaffDetails /></RoleProtectedRoute>} />
+          
           <Route path="employees" element={<RoleProtectedRoute allowedRoles={['admin']}><div className="p-8">HR / Employees Page</div></RoleProtectedRoute>} />
           <Route path="vehicles" element={<RoleProtectedRoute allowedRoles={['admin']}><div className="p-8">Transport Page</div></RoleProtectedRoute>} />
           <Route path="applicants" element={<RoleProtectedRoute allowedRoles={['admin']}><div className="p-8">Admission Page</div></RoleProtectedRoute>} />
