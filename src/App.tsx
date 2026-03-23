@@ -74,6 +74,14 @@ export default function App() {
     // Check active session on mount
     const initAuth = async () => {
       console.log('INDDIA ERP: Initializing Auth...');
+      
+      // Safety timeout to ensure loading state is cleared
+      const timeoutId = setTimeout(() => {
+        console.warn('INDDIA ERP: Auth initialization timed out.');
+        setLoading(false);
+        setInitialized(true);
+      }, 5000);
+
       try {
         if (!supabase) {
           console.warn('INDDIA ERP: Supabase client not initialized.');
@@ -103,6 +111,7 @@ export default function App() {
         console.error('INDDIA ERP: Auth initialization error:', error);
       } finally {
         console.log('INDDIA ERP: Auth initialization complete.');
+        clearTimeout(timeoutId);
         setLoading(false);
         setInitialized(true);
       }

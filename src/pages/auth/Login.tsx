@@ -25,6 +25,15 @@ export default function Login() {
     setLoading(true);
     setError(null);
 
+    // Safety timeout
+    const timeoutId = setTimeout(() => {
+      if (loading) {
+        console.warn('INDDIA ERP: Login timed out.');
+        setLoading(false);
+        setError('Login timed out. Please check your connection.');
+      }
+    }, 15000);
+
     try {
       let email = identifier;
       console.log('INDDIA ERP: Attempting login for:', identifier);
@@ -68,6 +77,7 @@ export default function Login() {
       console.error('INDDIA ERP: Login error:', err);
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };

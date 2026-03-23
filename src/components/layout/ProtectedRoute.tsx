@@ -9,7 +9,10 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading, initialized } = useAuthStore();
   const location = useLocation();
 
+  console.log('INDDIA ERP: ProtectedRoute state:', { initialized, loading, user: !!user });
+
   if (!initialized || loading) {
+    console.log('INDDIA ERP: ProtectedRoute showing spinner...');
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4">
@@ -21,8 +24,10 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!user) {
+    console.log('INDDIA ERP: ProtectedRoute redirecting to login...');
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  console.log('INDDIA ERP: ProtectedRoute rendering children...');
   return <>{children}</>;
 }
