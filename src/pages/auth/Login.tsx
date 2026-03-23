@@ -27,9 +27,11 @@ export default function Login() {
 
     try {
       let email = identifier;
+      console.log('INDDIA ERP: Attempting login for:', identifier);
 
       // Handle Student Login: Convert School ID to Email
       if (loginType === 'student') {
+        console.log('INDDIA ERP: Fetching email for school ID:', identifier);
         const fetchedEmail = await authService.getEmailBySchoolId(identifier);
         if (!fetchedEmail) {
           throw new Error('Invalid School ID. Please contact your administrator.');
@@ -38,24 +40,32 @@ export default function Login() {
       }
 
       // Supabase Auth Login
+      console.log('INDDIA ERP: Signing in with Supabase Auth...');
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        console.error('INDDIA ERP: Auth error:', authError);
+        throw authError;
+      }
 
       if (data.user) {
+        console.log('INDDIA ERP: Auth success, fetching profile for user:', data.user.id);
         const profile = await authService.getUserProfile(data.user.id);
         if (profile) {
+          console.log('INDDIA ERP: Profile found, navigating to dashboard...');
           setUser(profile);
           setRole(profile.role);
           navigate('/dashboard');
         } else {
+          console.warn('INDDIA ERP: Profile not found in users table.');
           throw new Error('User profile not found.');
         }
       }
     } catch (err: any) {
+      console.error('INDDIA ERP: Login error:', err);
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);

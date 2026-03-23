@@ -73,19 +73,36 @@ export default function App() {
 
     // Check active session on mount
     const initAuth = async () => {
+      console.log('INDDIA ERP: Initializing Auth...');
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        if (!supabase) {
+          console.warn('INDDIA ERP: Supabase client not initialized.');
+          return;
+        }
+
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
+        if (sessionError) {
+          console.error('INDDIA ERP: Session error:', sessionError);
+        }
+
         if (session?.user) {
+          console.log('INDDIA ERP: Found active session for user:', session.user.id);
           const profile = await authService.getUserProfile(session.user.id);
           if (profile) {
+            console.log('INDDIA ERP: Profile loaded:', profile.name);
             setUser(profile);
             setRole(profile.role);
+          } else {
+            console.warn('INDDIA ERP: Profile not found for session user.');
           }
+        } else {
+          console.log('INDDIA ERP: No active session found.');
         }
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        console.error('INDDIA ERP: Auth initialization error:', error);
       } finally {
+        console.log('INDDIA ERP: Auth initialization complete.');
         setLoading(false);
         setInitialized(true);
       }
@@ -95,7 +112,9 @@ export default function App() {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
+      console.log('INDDIA ERP: Auth state change:', event, session?.user?.id);
+      
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
         const profile = await authService.getUserProfile(session.user.id);
         if (profile) {
           setUser(profile);
